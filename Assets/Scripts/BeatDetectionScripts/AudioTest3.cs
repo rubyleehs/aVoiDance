@@ -32,7 +32,7 @@ public class AudioTest3 : MonoBehaviour
     public RunwayManager runwayManager;
     public UIManager uiManager;
 
-    List<float[]> songSpectrum = new List<float[]>();
+    public static List<float[]> songSpectrum = new List<float[]>();
     public static float[] curSpectrum;
     private float hertzPerBin;
 
@@ -42,7 +42,8 @@ public class AudioTest3 : MonoBehaviour
     public List<Transform> paths = new List<Transform>();
     public List<PathManager> pathManagers = new List<PathManager>();
     public static int combo =0;
-   
+
+    public static List<float> samNum = new List<float>();
     // Use this for initialization
 
     private void Start()
@@ -79,6 +80,8 @@ public class AudioTest3 : MonoBehaviour
         BeatCheck(MuseInfo.MidRange, 1f, 1);//
         //BeatCheck(MuseInfo.UpperMidRange, 1.5f,1);
 
+        CheckSamplesNum();
+
         if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
             if (Input.GetAxis("Vertical") != 0)
@@ -102,6 +105,13 @@ public class AudioTest3 : MonoBehaviour
         }
         */
     }
+
+    private void CheckSamplesNum()
+    {
+        samNum.Add(Time.time);
+        while (Time.time - samNum[0] >= playDelay) samNum.RemoveAt(0);
+    }
+
 
     void BeatCheck(Vector2Int frequencyRange, float h, int spawnPathIndex)
     {

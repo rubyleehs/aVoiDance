@@ -40,7 +40,8 @@ public class RunwayManager : MonoBehaviour
     public static float maxRunwayAngle;
     public static float runwayAngleSeperation;
     public float lastRingSpawn;
-    
+
+    private float largestrunwayVisualBeatSpectrumAverage = 0;
 
 
     private void Awake()
@@ -122,13 +123,27 @@ public class RunwayManager : MonoBehaviour
 
     void UpdateRunway()
     {
+        largestrunwayVisualBeatSpectrumAverage = 0;
         maxRunwayAngle = Mathf.Rad2Deg * Mathf.Asin(Mathf.Min(1,camSize.x / (2 * (originRadius + minPathLength))));
         runwayAngleSeperation = -2 * maxRunwayAngle / (runwayCount -1 + System.Convert.ToInt32(CompactRunway));
         int weightedRunwayVisualBeatSpectrumRange = 2 * 500 / ((runwayCount) *(runwayCount + 1));
         for (int n = 0; n < runways.Count; n++)
         {
-            float runwayVisualBeatSpectrumAverage = AudioTest3.GetAverage(AudioTest3.curSpectrum, 20 + n * (n + 1) / 2 * weightedRunwayVisualBeatSpectrumRange, 20 + (n + 1) * (n + 2) / 2 * weightedRunwayVisualBeatSpectrumRange);
-            if (runwayVisualBeatSpectrumAverage < 1) runwayVisualBeatSpectrumAverage = Mathf.Pow(runwayVisualBeatSpectrumAverage + 1, 2) - 1;
+            int _delayedSamplesIndex = AudioTest3.songSpectrum.Count - AudioTest3.samNum.Count;
+            float runwayVisualBeatSpectrumAverage = 0;
+            if (_delayedSamplesIndex > 0)
+            {
+                runwayVisualBeatSpectrumAverage = AudioTest3.GetAverage(AudioTest3.songSpectrum[AudioTest3.songSpectrum.Count - AudioTest3.samNum.Count], 20 + n * (n + 1) / 2 * weightedRunwayVisualBeatSpectrumRange, 20 + (n + 1) * (n + 2) / 2 * weightedRunwayVisualBeatSpectrumRange);
+                if (runwayVisualBeatSpectrumAverage < 1) runwayVisualBeatSpectrumAverage = Mathf.Pow(runwayVisualBeatSpectrumAverage + 1, 2) - 1;
+                largestrunwayVisualBeatSpectrumAverage = Mathf.Max(largestrunwayVisualBeatSpectrumAverage, runwayVisualBeatSpectrumAverage);
+                if(largestrunwayVisualBeatSpectrumAverage != runwayVisualBeatSpectrumAverage)
+                {
+                    largestrunwayVisualBeatSpectrumAverage *= 0.55f;//
+                    runwayVisualBeatSpectrumAverage = largestrunwayVisualBeatSpectrumAverage;
+                }
+            }
+                //float runwayVisualBeatSpectrumAverage = AudioTest3.GetAverage(AudioTest3.curSpectrum, 20 + n * (n + 1) / 2 * weightedRunwayVisualBeatSpectrumRange, 20 + (n + 1) * (n + 2) / 2 * weightedRunwayVisualBeatSpectrumRange);
+            
             float runwayRotAng =  runwayAngleSeperation * (n - 0.5f * (runways.Count -1));
             runways[n].GetComponent<LineRenderer>().SetPosition(1, new Vector3(0, 0.5f + 0.5f* minPathLength / originRadius - 0.5f * runwayLengthBeatMax + Mathf.SmoothStep(0,runwayLengthBeatMax, 0.5f + runwayVisualBeatSpectrumAverage)));//
             runways[n].rotation = Quaternion.Euler(new Vector3(0, 0, runwayRotAng));
