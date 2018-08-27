@@ -64,7 +64,6 @@ public class AudioTest3 : MonoBehaviour
         else
         {
             SelectSong(GlobalData.selectedSong);
-            Debug.Log(audioSourceToPlay.clip.name);
         }
         songName = audioSourceToPlay.clip.name;
     }
@@ -77,8 +76,8 @@ public class AudioTest3 : MonoBehaviour
         {
             availableSongNames[i] = songsAvailable[i].name;
         }
-
     }
+
     private void SelectSong(AudioClip _audioClip)
     {
         if (_audioClip == null) return;
@@ -93,11 +92,11 @@ public class AudioTest3 : MonoBehaviour
         pathRunwayIndex = new int[2] { 2, 5 };
         if(AutoPlay) pathRunwayIndex = new int[2] { 5, 10 };
 
-
         for (int i = 0; i < noOfPaths; i++)
         {
             float pathAngle = RunwayManager.runwayAngleSeperation * (i - 0.5f * (RunwayManager.runwayCount - 1));
-            paths.Add(Instantiate(pathGO,this.transform.position,Quaternion.Euler(new Vector3(0,0,pathAngle)),this.transform).transform);
+            paths.Add(Instantiate(pathGO,this.transform.position,Quaternion.identity,this.transform).transform);
+            paths[i].rotation = Quaternion.Euler(new Vector3(0, 0, pathAngle));
             paths[i].position = origin.position;
             pathManagers.Add(paths[i].GetComponent<PathManager>());
             pathManagers[i].currentIndex = pathRunwayIndex[i];

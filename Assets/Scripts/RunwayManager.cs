@@ -59,13 +59,14 @@ public class RunwayManager : MonoBehaviour
         aura.startWidth = 2 * originRadius;
         runwayCount = IrunwayCount;
 
-        
+
         if (AudioTest3.AutoPlay)
         {
             maxRunwayAngle = 90f;
             runwayAngleSeperation = 360 / 8;
             origin.localScale = Vector3.one * originRadius * 2f;
         }
+        else UpdateCamera();
         
         for (int i = 0; i < runwayCount; i++)
         {
@@ -124,7 +125,7 @@ public class RunwayManager : MonoBehaviour
         {
             //Debug.Log("originRadius Value Is Too Small! Setting to 0.5f * camSize!");
             //originRadius = 0.5f * camSize.x;
-            
+            Debug.Log(cam + "" + cam.transform.parent);
             cam.transform.parent.position = new Vector3(0, 0.5f* camSize.y, -10);
             return;
         }

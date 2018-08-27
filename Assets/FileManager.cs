@@ -17,6 +17,12 @@ public class FileManager : MonoBehaviour {
 	void Update () {
         if (Input.anyKeyDown)
         {
+            if ((Input.GetAxis("Horizontal") > 0))
+            {
+                currentFile.Select();
+            }
+
+
             if (Input.GetAxis("Vertical") != 0)
             {
                 if (Input.GetAxis("Vertical") > 0) currentFile.Scroll(1);
