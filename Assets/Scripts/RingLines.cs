@@ -40,6 +40,10 @@ public class RingLines : MonoBehaviour {
         for (int i = 0; i < resolution; i++)
         {
             float pointSeperation = 210 / resolution;
+            if (AudioTest3.AutoPlay)
+            {
+                pointSeperation = 410 / resolution;
+            }
             linePoints[i] =VectorStuff.AlterVector(Vector3.up * currentRadius, pointSeperation * (i - 0.5f * (resolution - 1)),0) + origin.position;
         }
         line.positionCount = resolution;

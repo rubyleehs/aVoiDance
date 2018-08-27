@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour {
     public float scoreTextShrinkDuration;
     private float scoreTextOriSize;
 
+    public Text songNameText;
 
     private void Awake()
     {
@@ -31,7 +32,7 @@ public class UIManager : MonoBehaviour {
         scoreTextOriSize = scoreText.fontSize;
     }
     void Start () {
-		
+        songNameText.text = AudioTest3.songName;
 	}
 	
 	// Update is called once per frame

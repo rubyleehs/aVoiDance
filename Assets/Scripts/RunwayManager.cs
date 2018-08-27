@@ -15,7 +15,8 @@ public class RunwayManager : MonoBehaviour
     public static float originRadius = 5.5f;
     public static float minPathLength =18;
     //public float maxBottomAllowanceSpace;
-    public static int runwayCount =8;
+    public int IrunwayCount = 8;
+    public static int runwayCount;
     public bool CompactRunway;
     public GameObject runwayLinesGO;
     public GameObject starGO;
@@ -26,6 +27,7 @@ public class RunwayManager : MonoBehaviour
 
     public float runwayLengthBeatMax;
     public float auraComboMultiplier;
+    public float auraStartRatio;
 
     private Camera cam;
     private Vector2 camSize;
@@ -55,7 +57,16 @@ public class RunwayManager : MonoBehaviour
         aura.positionCount = 3;
         aura.SetPositions(new Vector3[3] { Vector3.up * originRadius, Vector3.zero, -Vector3.up * originRadius });
         aura.startWidth = 2 * originRadius;
+        runwayCount = IrunwayCount;
 
+        
+        if (AudioTest3.AutoPlay)
+        {
+            maxRunwayAngle = 90f;
+            runwayAngleSeperation = 360 / 8;
+            origin.localScale = Vector3.one * originRadius * 2f;
+        }
+        
         for (int i = 0; i < runwayCount; i++)
         {
             CreateRunway(i);
@@ -65,7 +76,8 @@ public class RunwayManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateCamera();
+        
+        if(!AudioTest3.AutoPlay)UpdateCamera();
         UpdateRunway();
         if (Time.time - lastRingSpawn >= ringSpawnPeriod) SpawnRing();
         //TrySpawnStar();
@@ -75,9 +87,9 @@ public class RunwayManager : MonoBehaviour
 
     void AuraLogic()
     {
-        Vector3 _linePos = Vector3.up * originRadius * (1.2f + AudioTest3.combo * auraComboMultiplier);
+        Vector3 _linePos = Vector3.up * (auraStartRatio + AudioTest3.combo * auraComboMultiplier);
         aura.SetPositions(new Vector3[3] { _linePos, Vector3.zero, -_linePos });
-        aura.startWidth = 2 * originRadius * (1.2f + AudioTest3.combo * auraComboMultiplier);//
+        aura.startWidth = 4 * originRadius * (auraStartRatio + AudioTest3.combo * auraComboMultiplier);//
     }
 
     void StarsLogic()
@@ -125,6 +137,7 @@ public class RunwayManager : MonoBehaviour
     {
         largestrunwayVisualBeatSpectrumAverage = 0;
         maxRunwayAngle = Mathf.Rad2Deg * Mathf.Asin(Mathf.Min(1,camSize.x / (2 * (originRadius + minPathLength))));
+        if (AudioTest3.AutoPlay) maxRunwayAngle = 180;
         runwayAngleSeperation = -2 * maxRunwayAngle / (runwayCount -1 + System.Convert.ToInt32(CompactRunway));
         int weightedRunwayVisualBeatSpectrumRange = 2 * 500 / ((runwayCount) *(runwayCount + 1));
         for (int n = 0; n < runways.Count; n++)
@@ -197,7 +210,7 @@ public class RunwayManager : MonoBehaviour
         Transform star = Instantiate(starGO, Vector3.zero, Quaternion.identity, runways[randRunwayIndex]).transform;
         star.localScale = star.localScale/origin.localScale.x;
         star.localRotation = Quaternion.identity;
-        star.localPosition = new Vector3(0, 0.5f + 0.5f * minPathLength / originRadius - 0.5f * runwayLengthBeatMax);
+        star.localPosition = new Vector3(0, 0.5f + 0.5f * minPathLength / originRadius);
         starsVisuals.Add(star);
         stars.Add(new StarInfo { spawnTime = Time.time, indexNum = randRunwayIndex});//spawning is done. left movement/delettion/detection
         /*

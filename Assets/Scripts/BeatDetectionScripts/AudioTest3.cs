@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public static class MuseInfo
 {
@@ -16,9 +17,14 @@ public static class MuseInfo
 
 public class AudioTest3 : MonoBehaviour
 {
+    
+    public string audioFolderName;
+    public bool _AutoPlay;
+    public static bool AutoPlay;
     public int samplesToTest;
     public GameObject beatGO;
     public GameObject pathGO;
+    public Transform origin;
     public AudioSource audioSourceToSample;
     public AudioSource audioSourceToPlay;
     public float detectionSensivity;
@@ -44,17 +50,55 @@ public class AudioTest3 : MonoBehaviour
     public static int combo =0;
 
     public static List<float> samNum = new List<float>();
+    public static string songName;
+
+    public static string[] availableSongNames;
+    public static AudioClip[] songsAvailable;//
     // Use this for initialization
+
+    private void Awake()
+    {      
+        AutoPlay = _AutoPlay;
+        UpdateSongList();
+        if (AutoPlay) SelectSong(songsAvailable[Random.Range(0, songsAvailable.Length)]);
+        else
+        {
+            SelectSong(GlobalData.selectedSong);
+            Debug.Log(audioSourceToPlay.clip.name);
+        }
+        songName = audioSourceToPlay.clip.name;
+    }
+
+    private void UpdateSongList()
+    {
+        songsAvailable = Resources.LoadAll<AudioClip>(audioFolderName);
+        availableSongNames = new string[songsAvailable.Length];
+        for (int i = 0; i < songsAvailable.Length; i++)
+        {
+            availableSongNames[i] = songsAvailable[i].name;
+        }
+
+    }
+    private void SelectSong(AudioClip _audioClip)
+    {
+        if (_audioClip == null) return;
+
+        audioSourceToPlay.clip = _audioClip;
+        audioSourceToSample.clip = _audioClip;
+    }
+
 
     private void Start()
     {
         pathRunwayIndex = new int[2] { 2, 5 };
+        if(AutoPlay) pathRunwayIndex = new int[2] { 5, 10 };
 
 
         for (int i = 0; i < noOfPaths; i++)
         {
             float pathAngle = RunwayManager.runwayAngleSeperation * (i - 0.5f * (RunwayManager.runwayCount - 1));
-            paths.Add(Instantiate(pathGO,this.transform.position,Quaternion.Euler(new Vector3(0,0,pathAngle))).transform);
+            paths.Add(Instantiate(pathGO,this.transform.position,Quaternion.Euler(new Vector3(0,0,pathAngle)),this.transform).transform);
+            paths[i].position = origin.position;
             pathManagers.Add(paths[i].GetComponent<PathManager>());
             pathManagers[i].currentIndex = pathRunwayIndex[i];
             pathManagers[i].targetIndex = pathRunwayIndex[i];
@@ -82,8 +126,13 @@ public class AudioTest3 : MonoBehaviour
 
         CheckSamplesNum();
 
-        if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+        if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0 || AutoPlay)
         {
+            if (AutoPlay)
+            {
+                TryCaptureAnyBeat((int)Random.Range(-1, 2));
+                return;
+            }
             if (Input.GetAxis("Vertical") != 0)
             {
                 TryCaptureAnyBeat(0);
