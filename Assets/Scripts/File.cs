@@ -59,7 +59,7 @@ public class File : MonoBehaviour
     public void Scroll(int dir)
     {
         selectedIndex += -dir;
-        selectedIndex = Mathf.Clamp(selectedIndex, 0, itemNames.Length);
+        selectedIndex = Mathf.Clamp(selectedIndex, 0, itemNames.Length -1);
         UpdateListUI(selectedIndex);
     }
 }

@@ -108,7 +108,7 @@ public class PathManager : MonoBehaviour
         Destroy(_effect);
     }
 
-    public void FailBeat()
+    public void FailBeat()//add sound effect!
     {
         beats.RemoveAt(0);
         Destroy(beatsVisuals[0].gameObject);
@@ -129,13 +129,18 @@ public class PathManager : MonoBehaviour
     {
         if (beats.Count == 0) return;
         float beatDeltaTime = Time.time - beats[0] - audioManager.playDelay;
-        if (beatDeltaTime >= 0 && beatDeltaTime <= audioManager.beatCaptureTimeAllownce)
+        //if (beatDeltaTime >= 0 && beatDeltaTime <= audioManager.beatCaptureTimeAllownce)
+        if (beatDeltaTime >= -audioManager.beatCaptureTimeAllownce)
         {
             currentIndex = targetIndex;
             targetIndex += dir;
             targetIndex = Mathf.Clamp(targetIndex, 0, RunwayManager.runwayCount - 1);
             //float pathRotAng = RunwayManager.runways[currentIndex].localRotation.z;
             CaptureBeat();
+        }
+        else if(beatDeltaTime >= -audioManager.beatMissTimeSpan)
+        {
+            FailBeat();
         }
     }
 

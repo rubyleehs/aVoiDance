@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour {
     private Color comboTextEndColor;
     private float comboTextOriSize;
 
-    private int score = 0;
+    public static int score = 0;
 
     public Text scoreText;
     public float scoreTextExpandRatio;
@@ -24,12 +24,14 @@ public class UIManager : MonoBehaviour {
 
     private void Awake()
     {
+        score = 0;
         comboTextRevealColor = comboText.color;
         comboTextEndColor = comboText.color;
         comboTextEndColor.a = 0;
         comboTextOriSize = comboText.fontSize;
         comboText.enabled = false;
         scoreTextOriSize = scoreText.fontSize;
+        scoreText.text = "Highscore: " + GlobalData.LoadSongHighScore(AudioTest3.songName);
     }
     void Start () {
         songNameText.text = AudioTest3.songName;
@@ -70,7 +72,7 @@ public class UIManager : MonoBehaviour {
     {
         float _startTime = Time.time;
         float _progress = 0;
-        score += (10 * AudioTest3.combo);
+        score += (int)(5 *GlobalData.scoreMultiplier * AudioTest3.combo);
         scoreText.text = "" + score;
         scoreText.fontSize = (int)(scoreTextOriSize * scoreTextExpandRatio);
         while (_progress < 1)

@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: d054d92742b253849bf1966a6e871292
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Fabiolo
+  fontNames:
+  - Fabiolo
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 2fe60973fce29ff42b0c94d64cca9e2f, type: 3}
+  - {fileID: 12800000, guid: 0702e0a39c97bf94794953aa6764cca7, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

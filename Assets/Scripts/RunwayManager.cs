@@ -23,7 +23,6 @@ public class RunwayManager : MonoBehaviour
     public GameObject ring;
     public float ringSpawnPeriod;
     public static float contractionPeriod = 2;
-    public float starSpawnProbality;
 
     public float runwayLengthBeatMax;
     public float auraComboMultiplier;
@@ -49,6 +48,7 @@ public class RunwayManager : MonoBehaviour
     private void Awake()
     {
         cam = Camera.main;
+        runwayCount = IrunwayCount;
         runways = new List<Transform>();
         maxRunwayAngle = Mathf.Rad2Deg * Mathf.Asin(Mathf.Min(1, camSize.x / (2 * (originRadius + minPathLength))));
         runwayAngleSeperation = -2 * maxRunwayAngle / (runwayCount - 1 + System.Convert.ToInt32(CompactRunway));
@@ -57,7 +57,6 @@ public class RunwayManager : MonoBehaviour
         aura.positionCount = 3;
         aura.SetPositions(new Vector3[3] { Vector3.up * originRadius, Vector3.zero, -Vector3.up * originRadius });
         aura.startWidth = 2 * originRadius;
-        runwayCount = IrunwayCount;
 
 
         if (AudioTest3.AutoPlay)
@@ -125,7 +124,6 @@ public class RunwayManager : MonoBehaviour
         {
             //Debug.Log("originRadius Value Is Too Small! Setting to 0.5f * camSize!");
             //originRadius = 0.5f * camSize.x;
-            Debug.Log(cam + "" + cam.transform.parent);
             cam.transform.parent.position = new Vector3(0, 0.5f* camSize.y, -10);
             return;
         }
@@ -199,7 +197,7 @@ public class RunwayManager : MonoBehaviour
     public IEnumerator TrySpawnStar(int assignedBeatPathIndex)
     {
         float chance = Random.Range(0, 100);
-        if (chance > starSpawnProbality) yield break;
+        if (chance > GlobalData.modeStarSpawn[GlobalData.mode%GlobalData.modeText.Length]) yield break;
         float randDeltaTime = 0.5f * audioManager.minTimeBetweenBeats + Random.Range(-0.35f * audioManager.minTimeBetweenBeats, 0.35f * audioManager.minTimeBetweenBeats);
 
         yield return new WaitForSeconds(randDeltaTime);

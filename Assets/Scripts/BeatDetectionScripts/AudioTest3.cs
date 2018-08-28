@@ -35,6 +35,7 @@ public class AudioTest3 : MonoBehaviour
     public int minSampleBetweenBeats;
     public float minTimeBetweenBeats;
     public float beatCaptureTimeAllownce;
+    public float beatMissTimeSpan;
     public RunwayManager runwayManager;
     public UIManager uiManager;
 
@@ -54,10 +55,12 @@ public class AudioTest3 : MonoBehaviour
 
     public static string[] availableSongNames;
     public static AudioClip[] songsAvailable;//
+
     // Use this for initialization
 
     private void Awake()
-    {      
+    {
+        combo = 0;
         AutoPlay = _AutoPlay;
         UpdateSongList();
         if (AutoPlay) SelectSong(songsAvailable[Random.Range(0, songsAvailable.Length)]);
@@ -132,13 +135,16 @@ public class AudioTest3 : MonoBehaviour
                 TryCaptureAnyBeat((int)Random.Range(-1, 2));
                 return;
             }
-            if (Input.GetAxis("Vertical") != 0)
+            if (Input.anyKeyDown || GlobalData.Assist)
             {
-                TryCaptureAnyBeat(0);
-                return;
+                if (Input.GetAxis("Vertical") != 0)
+                {
+                    TryCaptureAnyBeat(0);
+                    return;
+                }
+                else if (Input.GetAxis("Horizontal") > 0) TryCaptureAnyBeat(1);
+                else TryCaptureAnyBeat(-1);
             }
-            else if (Input.GetAxis("Horizontal") > 0) TryCaptureAnyBeat(1);
-            else TryCaptureAnyBeat(-1);
         }
         /*
         for (int i = 0; i < noOfPaths - 1; i++)
@@ -197,7 +203,16 @@ public class AudioTest3 : MonoBehaviour
         audioSourceToSample.Play();
         yield return new WaitForSeconds(playDelay);
         audioSourceToPlay.Play();
+        StartCoroutine(EndSong(audioSourceToPlay.clip.length + playDelay));//
         yield return true;
+    }
+
+    public IEnumerator EndSong(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Debug.Log("songEnd");
+        GlobalData.SaveSongHighScore(songName, UIManager.score);
     }
 
     public static float GetAverage(float[] _array, int startIndex, int endIndex)

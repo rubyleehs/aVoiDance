@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: c75237b62fbb0964d801f10fafb42788
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: FabioloSmallCap
+  fontNames:
+  - FabioloSmallCap
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 068b69fcbd277a04d821399bd491c91d, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
