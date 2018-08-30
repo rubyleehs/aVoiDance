@@ -6,6 +6,7 @@ using System.IO;
 
 public class File : MonoBehaviour
 {
+    public UIManager uiManager;
     public string filePath;
     public string[] itemNames;
     public int selectedIndex;
@@ -34,7 +35,7 @@ public class File : MonoBehaviour
         if(_selectedObjs.Length == 1 && _selectedObjs[0].GetType() == typeof(AudioClip))
         {
             GlobalData.selectedSong = (AudioClip)_selectedObjs[0];
-            GlobalData.LoadGameScene();
+            StartCoroutine(uiManager.LoadSceneWithAnim(1));
         }
         else
         {

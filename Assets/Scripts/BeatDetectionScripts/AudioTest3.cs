@@ -17,7 +17,7 @@ public static class MuseInfo
 
 public class AudioTest3 : MonoBehaviour
 {
-    
+    public float startSongDelay;
     public string audioFolderName;
     public bool _AutoPlay;
     public static bool AutoPlay;
@@ -56,11 +56,14 @@ public class AudioTest3 : MonoBehaviour
     public static string[] availableSongNames;
     public static AudioClip[] songsAvailable;//
 
+    private static bool SongEnded = false;
+
     // Use this for initialization
 
     private void Awake()
     {
         combo = 0;
+        UIManager.maxCombo = 0;
         AutoPlay = _AutoPlay;
         UpdateSongList();
         if (AutoPlay) SelectSong(songsAvailable[Random.Range(0, songsAvailable.Length)]);
@@ -128,7 +131,18 @@ public class AudioTest3 : MonoBehaviour
 
         CheckSamplesNum();
 
-        if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0 || AutoPlay)
+        if (SongEnded)
+        {
+            if (Input.anyKeyDown) uiManager.LoadSceneWithAnim(2);
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            uiManager.EndSongStuff();
+            Debug.Log("Fake End Song");
+        }
+
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0 || AutoPlay)
         {
             if (AutoPlay)
             {
@@ -200,6 +214,9 @@ public class AudioTest3 : MonoBehaviour
     }
     public IEnumerator InitiateSong()
     {
+        SetAudioVolume(1);
+        SongEnded = false;
+        yield return new WaitForSeconds(startSongDelay);
         audioSourceToSample.Play();
         yield return new WaitForSeconds(playDelay);
         audioSourceToPlay.Play();
@@ -210,9 +227,13 @@ public class AudioTest3 : MonoBehaviour
     public IEnumerator EndSong(float delay)
     {
         yield return new WaitForSeconds(delay);
-
-        Debug.Log("songEnd");
-        GlobalData.SaveSongHighScore(songName, UIManager.score);
+        if (AutoPlay)
+        {
+            Awake();
+            yield break;
+        }
+        else GlobalData.SaveSongHighScore(songName, UIManager.score);
+        uiManager.EndSongStuff();
     }
 
     public static float GetAverage(float[] _array, int startIndex, int endIndex)
@@ -252,6 +273,15 @@ public class AudioTest3 : MonoBehaviour
     public void AddToCombo()
     {
         combo++;
+        if(combo > UIManager.maxCombo)
+        {
+            UIManager.maxCombo = combo;
+        }
         uiManager.CheckCombo();
+    }
+
+    public void SetAudioVolume(float _vol)
+    {
+        audioSourceToPlay.volume = _vol;
     }
 }

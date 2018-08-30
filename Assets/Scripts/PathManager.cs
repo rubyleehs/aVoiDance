@@ -94,6 +94,7 @@ public class PathManager : MonoBehaviour
         beatsVisuals.RemoveAt(0);
         StartCoroutine(CaptureEffect());
         audioManager.AddToCombo();
+        UIManager.beatCaptured++;
         Debug.Log("capture sucess!");
     }
 
@@ -113,9 +114,9 @@ public class PathManager : MonoBehaviour
         beats.RemoveAt(0);
         Destroy(beatsVisuals[0].gameObject);
         beatsVisuals.RemoveAt(0);
+        UIManager.beatMissed++;
         FailEffect();
         AudioTest3.combo = 0;
-        Debug.Log("beat missed");
     }
 
     public void FailEffect()
@@ -130,7 +131,7 @@ public class PathManager : MonoBehaviour
         if (beats.Count == 0) return;
         float beatDeltaTime = Time.time - beats[0] - audioManager.playDelay;
         //if (beatDeltaTime >= 0 && beatDeltaTime <= audioManager.beatCaptureTimeAllownce)
-        if (beatDeltaTime >= -audioManager.beatCaptureTimeAllownce)
+        if ((beatDeltaTime >= -audioManager.beatCaptureTimeAllownce && !GlobalData.Assist) || (GlobalData.Assist && beatDeltaTime >= 0 && beatDeltaTime <= audioManager.beatCaptureTimeAllownce))
         {
             currentIndex = targetIndex;
             targetIndex += dir;

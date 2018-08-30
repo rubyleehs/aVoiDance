@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GlobalData : MonoBehaviour
 {
-
+    public static bool DoOpenSceneTransition;
     public string ImenuScene;
     public string IgameScene;
     public AudioClip testAudio;
@@ -23,6 +23,7 @@ public class GlobalData : MonoBehaviour
     public static float[] modeStarSpawn;
     public static float[] modeScoreMultiplier;
     public static bool Assist = true;
+
     void Awake()
     {
         if (instance == null)
@@ -45,7 +46,7 @@ public class GlobalData : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) LoadGameScene();
+        //if (Input.GetKeyDown(KeyCode.Space)) LoadGameScene();
     }
 
     public static void LoadGameScene()

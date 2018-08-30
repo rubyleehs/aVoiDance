@@ -105,7 +105,7 @@ public class RunwayManager : MonoBehaviour
                 {
                     AudioTest3.combo = 0;
                     _pathManager.FailEffect();
-                    Debug.Log("You got hit!");
+                    UIManager.hitsTaken++;
                 }
                 Destroy(starsVisuals[i].gameObject);
                 starsVisuals.RemoveAt(i);
@@ -228,8 +228,4 @@ public class RunwayManager : MonoBehaviour
         */
     }
 
-    void SpawnStar()
-    {
-
-    }
 }
