@@ -54,14 +54,15 @@ public class AudioTest3 : MonoBehaviour
     public static string songName;
 
     public static string[] availableSongNames;
-    public static AudioClip[] songsAvailable;//
+    public static AudioClip[] songsAvailable;
 
-    private static bool SongEnded = false;
+    public static bool SongEnded = false;
 
     // Use this for initialization
 
     private void Awake()
     {
+        Time.timeScale = 1;
         combo = 0;
         UIManager.maxCombo = 0;
         AutoPlay = _AutoPlay;
@@ -135,12 +136,13 @@ public class AudioTest3 : MonoBehaviour
         {
             if (Input.anyKeyDown) uiManager.LoadSceneWithAnim(2);
             return;
-        }
+        }/*
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            uiManager.EndSongStuff();
+            StartCoroutine(uiManager.EndSongStuff());
             Debug.Log("Fake End Song");
         }
+        */
 
         if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0 || AutoPlay)
         {
@@ -151,15 +153,17 @@ public class AudioTest3 : MonoBehaviour
             }
             if (Input.anyKeyDown || GlobalData.Assist)
             {
-                if (Input.GetAxis("Vertical") != 0)
+                if (Mathf.Abs(Input.GetAxis("Vertical")) >= 0.5f)
                 {
                     TryCaptureAnyBeat(0);
                     return;
                 }
-                else if (Input.GetAxis("Horizontal") > 0) TryCaptureAnyBeat(1);
-                else TryCaptureAnyBeat(-1);
+                else if (Input.GetAxis("Horizontal") >= 0.5f) TryCaptureAnyBeat(1);
+                else if (Input.GetAxis("Horizontal") <= -0.5f) TryCaptureAnyBeat(-1);
             }
+            
         }
+
         /*
         for (int i = 0; i < noOfPaths - 1; i++)
         {
@@ -219,21 +223,25 @@ public class AudioTest3 : MonoBehaviour
         yield return new WaitForSeconds(startSongDelay);
         audioSourceToSample.Play();
         yield return new WaitForSeconds(playDelay);
+        //Debug.Log("realSongStart");
         audioSourceToPlay.Play();
         StartCoroutine(EndSong(audioSourceToPlay.clip.length + playDelay));//
-        yield return true;
+        //yield return true;
     }
 
     public IEnumerator EndSong(float delay)
     {
         yield return new WaitForSeconds(delay);
+        //Debug.Log("RealSongEnd");
         if (AutoPlay)
         {
             Awake();
             yield break;
         }
         else GlobalData.SaveSongHighScore(songName, UIManager.score);
-        uiManager.EndSongStuff();
+        StartCoroutine(uiManager.EndSongStuff());
+        yield return new WaitForSeconds(delay);
+        SongEnded = true;
     }
 
     public static float GetAverage(float[] _array, int startIndex, int endIndex)
@@ -283,5 +291,17 @@ public class AudioTest3 : MonoBehaviour
     public void SetAudioVolume(float _vol)
     {
         audioSourceToPlay.volume = _vol;
+    }
+
+    public void Pause()
+    {
+        audioSourceToSample.Pause();
+        audioSourceToPlay.Pause();
+    }
+
+    public void Unpause()
+    {
+        audioSourceToSample.UnPause();
+        audioSourceToPlay.UnPause();
     }
 }

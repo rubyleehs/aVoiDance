@@ -23,6 +23,7 @@ public class GlobalData : MonoBehaviour
     public static float[] modeStarSpawn;
     public static float[] modeScoreMultiplier;
     public static bool Assist = true;
+    public static bool Paused = false;
 
     void Awake()
     {

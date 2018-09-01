@@ -95,7 +95,7 @@ public class PathManager : MonoBehaviour
         StartCoroutine(CaptureEffect());
         audioManager.AddToCombo();
         UIManager.beatCaptured++;
-        Debug.Log("capture sucess!");
+        //Debug.Log("capture sucess!");
     }
 
     public IEnumerator CaptureEffect()
