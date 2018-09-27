@@ -53,8 +53,6 @@ public class AudioTest3 : MonoBehaviour
     public static List<float> samNum = new List<float>();
     public static string songName;
 
-    public static string[] availableSongNames;
-    public static AudioClip[] songsAvailable;
 
     public static bool SongEnded = false;
 
@@ -62,33 +60,33 @@ public class AudioTest3 : MonoBehaviour
 
     private void Awake()
     {
+        //Debug.Log("Menu load");
         Time.timeScale = 1;
         combo = 0;
         UIManager.maxCombo = 0;
         AutoPlay = _AutoPlay;
-        UpdateSongList();
-        if (AutoPlay) SelectSong(songsAvailable[Random.Range(0, songsAvailable.Length)]);
+        if (GlobalData.songsAvailable == null || GlobalData.songsAvailable.Count == 0)
+        {
+            GlobalData.DoDebugText("Adjusting Universal Constants");
+            //StartCoroutine(GlobalData.UpdateSongList()); 
+        }
         else
         {
-            SelectSong(GlobalData.selectedSong);
+            if (AutoPlay) SelectSong(Random.Range(0, GlobalData.songsAvailable.Count));
+            else
+            {
+                SelectSong(GlobalData.selectedSongIndex);
+            }
+            //Debug.Log(GlobalData.selectedSong.name);
         }
-        songName = audioSourceToPlay.clip.name;
+
     }
 
-    private void UpdateSongList()
+    private void SelectSong(int _index)
     {
-        songsAvailable = Resources.LoadAll<AudioClip>(audioFolderName);
-        availableSongNames = new string[songsAvailable.Length];
-        for (int i = 0; i < songsAvailable.Length; i++)
-        {
-            availableSongNames[i] = songsAvailable[i].name;
-        }
-    }
-
-    private void SelectSong(AudioClip _audioClip)
-    {
-        if (_audioClip == null) return;
-
+        AudioClip _audioClip = GlobalData.songsAvailable[_index];
+        GlobalData.selectedSong = _audioClip;
+        songName = GlobalData.availableSongNames[_index];
         audioSourceToPlay.clip = _audioClip;
         audioSourceToSample.clip = _audioClip;
     }
@@ -303,5 +301,17 @@ public class AudioTest3 : MonoBehaviour
     {
         audioSourceToSample.UnPause();
         audioSourceToPlay.UnPause();
+    }
+
+    public static long DirCount(DirectoryInfo d)
+    {
+        long i = 0;
+        // Add file sizes.
+        FileInfo[] fis = d.GetFiles();
+        foreach (FileInfo fi in fis)
+        {
+            if (fi.Extension.Equals(".mp3")) i++;
+        }
+        return i;
     }
 }

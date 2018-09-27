@@ -226,6 +226,7 @@ public class UIManager : MonoBehaviour {
 
     public IEnumerator ShowKeys(int _flashCount)
     {
+        if (keySprites == null || keySprites.Count == 0) yield break;
         Color _keyOriColor = keySprites[0].color;
         Color _keyFlashColor = keySprites[0].color;
         Vector3 _oriScale = keySprites[0].transform.localScale;

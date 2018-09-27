@@ -23,7 +23,8 @@ public class FileManager : MonoBehaviour {
         IsSelecting = false;//
         currentFile.FindItemsInFile();
         currentFile.UpdateListUI(0);
-        modeText.text = "      " + GlobalData.modeText[GlobalData.mode];
+        modeText.text = "      " + GlobalData.modeText[GlobalData.mode % GlobalData.modeText.Length];
+        if (GlobalData.mode >= GlobalData.modeText.Length) modeText.text += " - No Assist";
         modeText.text += "  ▶";
         lastClickTime = 0;
 	}
@@ -88,10 +89,8 @@ public class FileManager : MonoBehaviour {
                     if (GlobalData.mode == 2 * GlobalData.modeText.Length - 1) downArrow.gameObject.SetActive(false);
                     else downArrow.gameObject.SetActive(true);
 
-                    if (GlobalData.mode >= GlobalData.modeText.Length)
-                    {
-                        modeText.text += " - No Assist";
-                    }
+                    if (GlobalData.mode >= GlobalData.modeText.Length) modeText.text += " - No Assist";
+                    
                     modeText.text += "  ▶";
                 }
             }

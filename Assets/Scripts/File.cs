@@ -19,30 +19,27 @@ public class File : MonoBehaviour
 
     public void FindItemsInFile()
     {
-        Object[] items = Resources.LoadAll(filePath);
-        itemNames = new string[items.Length];
-        for (int i = 0; i < items.Length; i++)
+        //Object[] items = Resources.LoadAll(filePath);
+        //Debug.Log(GlobalData.availableSongNames.Length);
+        if (GlobalData.availableSongNames == null) return;
+        itemNames = new string[GlobalData.availableSongNames.Length];
+        for (int i = 0; i < itemNames.Length; i++)
         {
-            itemNames[i] = Path.GetFileNameWithoutExtension(filePath + "/" + items[i].name);
+            //itemNames[i] = Path.GetFileNameWithoutExtension(filePath + "/" + items[i].name);
+            itemNames[i] = GlobalData.availableSongNames[i];
         }
     }
 
     public void Select()
     {
-        string _selectedFilePath = filePath + "/" + itemNames[selectedIndex];
-        Object[] _selectedObjs = Resources.LoadAll(_selectedFilePath);
+        string _selectedFilePath = Application.streamingAssetsPath + "/" + itemNames[selectedIndex];
+        AudioClip _selectedAudio = GlobalData.songsAvailable[selectedIndex];
 
-        if(_selectedObjs.Length == 1 && _selectedObjs[0].GetType() == typeof(AudioClip))
-        {
-            GlobalData.selectedSong = (AudioClip)_selectedObjs[0];
-            StartCoroutine(uiManager.LoadSceneWithAnim(1));
-        }
-        else
-        {
-            File _selectedFile = Instantiate(fileManager.fileGO, Vector3.right, Quaternion.identity, this.transform).GetComponent<File>();
-            _selectedFile.filePath = _selectedFilePath;
-            _selectedFile.FindItemsInFile();
-        }
+        GlobalData.selectedSong = _selectedAudio;
+        GlobalData.selectedSongIndex = selectedIndex;
+        AudioTest3.songName = GlobalData.availableSongNames[selectedIndex];
+        StartCoroutine(uiManager.LoadSceneWithAnim(1));
+
     }
 
     public void UpdateListUI(int _curIndex)
